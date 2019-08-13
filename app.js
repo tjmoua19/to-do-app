@@ -1,24 +1,35 @@
 function onReady() {
-    const toDos = [];
-    const addToDoForm = document.getElementById("addToDoForm");
-    let id = 0;
+  let toDos = JSON.parse( localStorage.getItem('toDos') ) || [];
+  let id = toDos.length || 0;
+  const addToDoForm = document.getElementById('addToDoForm');
+  const newToDoText = document.getElementById('newToDoText');
 
-    function createNewToDo() {
-        const newToDoText = document.getElementById("newToDoText");
-        if (!newToDoText.value) {
-            return;
-        }
-        toDos.push({
-            title: newToDoText.value,
-            complete: false,
-            id: id
-        });
-        newToDoText.value = "";
-        renderTheUI();
-        id++;
-    }
+  function createNewToDo() {
+    const newToDoText = document.getElementById("newToDoText");
+    if (!newToDoText.value) {
+      return;
+  }
 
-    function deleteToDo(id) {
+  toDos.push({
+    title: newToDoText.value,
+    complete: false,
+    id: id
+  });
+    newToDoText.value = "";
+    renderTheUI();
+    id = id++;
+  }
+
+  function deleteToDo(id) {
+    return toDos.filter(toDo => toDo.id !== id);
+  }
+
+  function saveToDos() {
+    localStorage.setItem('toDos', JSON.stringify(toDos) );
+  }
+
+
+  function deleteToDo(id) {
         return toDos.filter(toDo => toDo.id !== id);
     }
 
@@ -37,16 +48,34 @@ function onReady() {
             
             checkbox.type = "checkbox";
 
-        const deleteButton = document.createElement('button');
+      checkbox.checked = toDo.complete;
+
+      
+      const deleteButton = document.createElement('button');
         deleteButton.textContent = "Delete";
         
         deleteButton.addEventListener('click', () => {
         toDos = toDos.filter(function(task){
         return task.id !== toDo.id;
-        });
+      });
 
-            renderTheUI();
-        });
+      checkbox.addEventListener('click', function() {
+        toDo.complete = checkbox.checked ? true : false;
+        saveToDos();
+      });
+
+      toDoList.appendChild(newLi);
+      newLi.appendChild(checkbox);
+      newLi.appendChild(deleteBtn);
+
+      deleteBtn.addEventListener('click', () => {
+        toDos = deleteToDo(toDo.id);
+        renderTheUI();
+        saveToDos();
+      });
+        
+      renderTheUI();
+    });
             
             newLi.textContent = toDo.title;
           
@@ -61,9 +90,10 @@ function onReady() {
         createNewToDo();
     });
 
-    renderTheUI();
+  renderTheUI();
 }
 
 window.onload = function () {
     onReady();
 };
+
