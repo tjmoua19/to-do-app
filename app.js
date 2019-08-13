@@ -1,4 +1,4 @@
-unction onReady() {
+function onReady() {
     const toDos = [];
     const addToDoForm = document.getElementById("addToDoForm");
     let id = 0;
@@ -15,7 +15,7 @@ unction onReady() {
         });
         newToDoText.value = "";
         renderTheUI();
-        id = id + 1;
+        id++;
     }
 
     function deleteToDo(id) {
